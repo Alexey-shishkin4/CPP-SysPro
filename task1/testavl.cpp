@@ -34,12 +34,12 @@ void testSearch() {
     avl.insert(10);
     avl.insert(20);
     avl.insert(30);
-    
+
     assert(avl.search(10) == true);
     assert(avl.search(20) == true);
     assert(avl.search(30) == true);
     assert(avl.search(40) == false);
-    
+
     std::cout << "testSearch passed!" << std::endl;
 }
 

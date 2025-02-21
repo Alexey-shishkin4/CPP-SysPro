@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <cassert>
 
 class AVLNode {
 public:
@@ -8,7 +9,7 @@ public:
     AVLNode* right;
     int height;
 
-    AVLNode(int k): key(k), left(nullptr), right(nullptr), height(1) {}
+    AVLNode(int k) : key(k), left(nullptr), right(nullptr), height(1) {}
 };
 
 class AVLTree {
@@ -48,8 +49,10 @@ private:
         if (key < node->key) node->left = insert(node->left, key);
         else if (key > node->key) node->right = insert(node->right, key);
         else return node;
+
         node->height = 1 + std::max(height(node->left), height(node->right));
         int balance = balanceFactor(node);
+
         if (balance > 1 && key < node->left->key) return rightRotate(node);
         if (balance < -1 && key > node->right->key) return leftRotate(node);
         if (balance > 1 && key > node->left->key) {
@@ -92,6 +95,7 @@ private:
         if (!root) return root;
         root->height = 1 + std::max(height(root->left), height(root->right));
         int balance = balanceFactor(root);
+
         if (balance > 1 && balanceFactor(root->left) >= 0) return rightRotate(root);
         if (balance > 1 && balanceFactor(root->left) < 0) {
             root->left = leftRotate(root->left);
@@ -120,41 +124,27 @@ private:
         return search(root->right, key);
     }
 
+    void destroyTree(AVLNode* node) {
+        if (!node) return;
+        destroyTree(node->left);
+        destroyTree(node->right);
+        delete node;
+    }
+
 public:
-    AVLTree(): root(nullptr) {}
+    AVLTree() : root(nullptr) {}
+
+    ~AVLTree() {
+        destroyTree(root);
+    }
 
     void insert(int key) { root = insert(root, key); }
     void remove(int key) { root = deleteNode(root, key); }
     bool search(int key) { return search(root, key); }
+    
     std::vector<int> getInorder() {
         std::vector<int> result;
         inorder(root, result);
         return result;
     }
 };
-
-/*int main() {
-    AVLTree avl;
-    avl.insert(10);
-    avl.insert(20);
-    avl.insert(30);
-    avl.insert(40);
-    avl.insert(50);
-    avl.insert(25);
-
-    std::vector<int> inorder = avl.getInorder();
-    std::cout << "Inorder traversal: ";
-    for (int val : inorder) std::cout << val << " ";
-    std::cout << std::endl;
-
-    avl.remove(30);
-    inorder = avl.getInorder();
-    std::cout << "After removing 30: ";
-    for (int val : inorder) std::cout << val << " ";
-    std::cout << std::endl;
-
-    std::cout << "Is 25 in the tree? " << (avl.search(25) ? "Yes" : "No") << std::endl;
-    std::cout << "Is 30 in the tree? " << (avl.search(30) ? "Yes" : "No") << std::endl;
-
-    return 0;
-}*/
