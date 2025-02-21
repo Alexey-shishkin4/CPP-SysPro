@@ -10,7 +10,7 @@ void testInsert() {
     avl.insert(30);
     avl.insert(40);
     avl.insert(50);
-    
+
     std::vector<int> expected = {10, 20, 30, 40, 50};
     assert(avl.getInorder() == expected);
     std::cout << "testInsert passed!" << std::endl;
@@ -23,7 +23,7 @@ void testRemove() {
     avl.insert(30);
     avl.insert(40);
     avl.remove(30);
-    
+
     std::vector<int> expected = {10, 20, 40};
     assert(avl.getInorder() == expected);
     std::cout << "testRemove passed!" << std::endl;
