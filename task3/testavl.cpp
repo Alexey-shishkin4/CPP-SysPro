@@ -43,10 +43,37 @@ void testSearch() {
     std::cout << "testSearch passed!" << std::endl;
 }
 
+void testCopyConstructor() {
+    AVLTree avl;
+    avl.insert(10);
+    avl.insert(20);
+    avl.insert(30);
+
+    AVLTree avlCopy(avl);
+    assert(avl.getInorder() == avlCopy.getInorder());
+
+    std::cout << "testCopyConstructor passed!" << std::endl;
+}
+
+void testAssignmentOperator() {
+    AVLTree avl;
+    avl.insert(10);
+    avl.insert(20);
+    avl.insert(30);
+
+    AVLTree avlAssigned;
+    avlAssigned = avl;
+    assert(avl.getInorder() == avlAssigned.getInorder());
+
+    std::cout << "testAssignmentOperator passed!" << std::endl;
+}
+
 int main() {
     testInsert();
     testRemove();
     testSearch();
+    testCopyConstructor();
+    testAssignmentOperator();
 
     std::cout << "All tests passed!" << std::endl;
     return 0;

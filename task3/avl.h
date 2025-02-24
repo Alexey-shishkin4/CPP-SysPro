@@ -10,19 +10,20 @@ public:
     int height;
 
     AVLNode(int k) : key(k), left(nullptr), right(nullptr), height(1) {}
+
+    AVLNode(const AVLNode& other)
+        : key(other.key), height(other.height),
+        left(other.left ? new AVLNode(*other.left) : nullptr),
+        right(other.right ? new AVLNode(*other.right) : nullptr) {
+    }
 };
 
 class AVLTree {
 private:
     AVLNode* root;
 
-    int height(AVLNode* node) {
-        return node ? node->height : 0;
-    }
-
-    int balanceFactor(AVLNode* node) {
-        return node ? height(node->left) - height(node->right) : 0;
-    }
+    int height(AVLNode* node) { return node ? node->height : 0; }
+    int balanceFactor(AVLNode* node) { return node ? height(node->left) - height(node->right) : 0; }
 
     AVLNode* rightRotate(AVLNode* y) {
         AVLNode* x = y->left;
@@ -133,12 +134,23 @@ private:
         delete node;
     }
 
+    AVLNode* cloneTree(AVLNode* node) {
+        return node ? new AVLNode(*node) : nullptr;
+    }
+
 public:
     AVLTree() : root(nullptr) {}
 
-    ~AVLTree() {
+    AVLTree(const AVLTree& other) : root(cloneTree(other.root)) {}
+
+    AVLTree& operator=(const AVLTree& other) {
+        if (this == &other) return *this;
         destroyTree(root);
+        root = cloneTree(other.root);
+        return *this;
     }
+
+    ~AVLTree() { destroyTree(root); }
 
     void insert(int key) { root = insert(root, key); }
     void remove(int key) { root = deleteNode(root, key); }
