@@ -143,10 +143,22 @@ public:
 
     AVLTree(const AVLTree& other) : root(cloneTree(other.root)) {}
 
+    AVLTree(AVLTree&& other) noexcept : root(other.root) {
+        other.root = nullptr;
+    }
+
     AVLTree& operator=(const AVLTree& other) {
         if (this == &other) return *this;
         destroyTree(root);
         root = cloneTree(other.root);
+        return *this;
+    }
+
+    AVLTree& operator=(AVLTree&& other) noexcept {
+        if (this == &other) return *this;
+        destroyTree(root);
+        root = other.root;
+        other.root = nullptr;
         return *this;
     }
 

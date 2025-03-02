@@ -68,12 +68,43 @@ void testAssignmentOperator() {
     std::cout << "testAssignmentOperator passed!" << std::endl;
 }
 
+void testMoveConstructor() {
+    AVLTree avl;
+    avl.insert(10);
+    avl.insert(20);
+    avl.insert(30);
+
+    AVLTree avlMoved(std::move(avl));
+    std::vector<int> expected = { 10, 20, 30 };
+    assert(avlMoved.getInorder() == expected);
+    assert(avl.getInorder().empty());  // avl should be in a valid but empty state after move
+
+    std::cout << "testMoveConstructor passed!" << std::endl;
+}
+
+void testMoveAssignmentOperator() {
+    AVLTree avl;
+    avl.insert(10);
+    avl.insert(20);
+    avl.insert(30);
+
+    AVLTree avlAssigned;
+    avlAssigned = std::move(avl);
+    std::vector<int> expected = { 10, 20, 30 };
+    assert(avlAssigned.getInorder() == expected);
+    assert(avl.getInorder().empty());  // avl should be in a valid but empty state after move
+
+    std::cout << "testMoveAssignmentOperator passed!" << std::endl;
+}
+
 int main() {
     testInsert();
     testRemove();
     testSearch();
     testCopyConstructor();
     testAssignmentOperator();
+    testMoveConstructor();
+    testMoveAssignmentOperator();
 
     std::cout << "All tests passed!" << std::endl;
     return 0;
