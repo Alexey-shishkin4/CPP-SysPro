@@ -2,11 +2,11 @@
 
 
 template <typename T>
-class DeepCopyScopedPointerScopedPointer {
+class DeepCopyScopedPointer {
 	T* pointer;
 
 public:
-	explicit DeepCopyScopedPointerScopedPointer(T* raw) : pointer(raw) {}
+	explicit DeepCopyScopedPointer(T* raw) : pointer(raw) {}
 
 	DeepCopyScopedPointer(const DeepCopyScopedPointer& other)
 		: pointer(other.pointer ? new T(*other.pointer) : nullptr) {
@@ -41,7 +41,7 @@ public:
 	T& get() { return *pointer; }
 	const T& get() const { return *pointer; }
 
-	~DeepCopyScopedPointerScopedPointer() { delete pointer; }
+	~DeepCopyScopedPointer() { delete pointer; }
 };
 
 
@@ -73,7 +73,33 @@ public:
 
 
 	T& get() { return *pointer; }
-	const t& get() const { return *pointer; }
+	const T& get() const { return *pointer; }
 
 	~MoveOnlyScopedPointer() { delete pointer; }
 };
+
+
+struct Data {
+	int value;
+	Data(int v) : value(v) {}
+};
+
+int main() {
+	// Deep copy version
+	DeepCopyScopedPointer<Data> ptr1(new Data(10));
+	DeepCopyScopedPointer<Data> ptr2 = ptr1;  // Deep copy!
+	ptr1.get().value = 20;
+
+	std::cout << ptr1.get().value << std::endl;  // 20
+	std::cout << ptr2.get().value << std::endl;  // 10
+
+	// Move-only version
+	MoveOnlyScopedPointer<Data> ptr3(new Data(30));
+	MoveOnlyScopedPointer<Data> ptr4 = std::move(ptr3); // Ownership transferred!
+
+	if (ptr3.get().value) {} // ptr3 no longer holds anything (nullptr dereference if accessed!)
+
+	std::cout << ptr4.get().value << std::endl;  // 30
+
+	return 0;
+}
