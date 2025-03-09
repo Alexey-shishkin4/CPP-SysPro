@@ -4,7 +4,6 @@ project(SampleTest1)
 
 include_directories(${CMAKE_SOURCE_DIR}/external/googletest/googletest)
 
-
 include(FetchContent)
 FetchContent_Declare(
     googletest
@@ -14,14 +13,18 @@ FetchContent_Declare(
 
 FetchContent_MakeAvailable(googletest)
 
-add_executable(SampleTest1
-    testavl.cpp
- "test.cpp")
+add_executable(SampleTest1 testavl.cpp)
 
-add_executable(SampleTests
-    test.cpp
- "test.cpp")
+add_executable(SampleTests test.cpp)
 
 target_link_libraries(SampleTests gtest gtest_main)
 
-target_include_directories(SampleTests PRIVATE external/googletest/googletest)
+target_include_directories(SampleTests PRIVATE ${CMAKE_SOURCE_DIR}/external/googletest/googletest)
+
+option(ENABLE_SANITIZERS "Enable Address, Undefined Behavior, and Memory Leak sanitizers" OFF)
+
+if (ENABLE_SANITIZERS)
+    set(SANITIZER_FLAGS "-fsanitize=leak,address,undefined")
+    target_compile_options(SampleTests PRIVATE ${SANITIZER_FLAGS})
+    target_link_options(SampleTests PRIVATE ${SANITIZER_FLAGS})
+endif()
